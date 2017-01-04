@@ -1,0 +1,20 @@
+<div layout="row">
+    <h5>
+        <strong ng-transclude></strong>
+    </h5>
+    <span flex></span>
+
+    <i class="mdi mdi-delete-sweep mdi-2x"
+    	ng-click="ccWidgetToolbarCtrl.resetData(ccWidgetToolbarCtrl.widgetCtrl.metric, ccWidgetToolbarCtrl.widgetCtrl.node)">
+    	<md-tooltip>Reset data</md-tooltip>
+	</i>
+    <i class="mdi mdi-refresh mdi-2x" ng-click="ccWidgetToolbarCtrl.reload()">
+    	<md-tooltip>Reload data</md-tooltip>
+    </i>
+    <i class="mdi mdi-edit mdi-2x" ng-click="ccWidgetToolbarCtrl.openEditWidgetDialog()">
+    	<md-tooltip>Edit widget</md-tooltip>
+    </i>
+    <i class="mdi mdi-close mdi-2x" ng-click="ccWidgetToolbarCtrl.removeWidget()">
+    	<md-tooltip>Remove widget</md-tooltip>
+    </i>
+</div>

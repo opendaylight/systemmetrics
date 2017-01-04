@@ -1,0 +1,20 @@
+<div md-whiteframe="1" flex>
+    <cc-widget-toolbar widget-ctrl="radarCtrl">
+        [{{radarCtrl.node}}]
+    </cc-widget-toolbar>
+    <div layout="row" flex>
+        <div layout="row" layout-align="center center" flex ng-if="radarCtrl.radarData.data[0].length">
+                <canvas class="chart chart-radar"
+                    chart-options="radarCtrl.radarOptions"
+                    chart-data="radarCtrl.radarData.data"
+                    chart-labels="radarCtrl.metric"
+                    chart-colors="radarCtrl.radarData.colors">
+                </canvas>
+            </div>
+            <div layout="row" layout-align="center center" flex ng-if="!radarCtrl.radarData.data[0].length">
+                <md-progress-circular md-diameter="96" md-mode='indeterminate'></md-progress-circular>
+                Waiting for data!
+            </div>
+        </div>
+    </div>
+</div>

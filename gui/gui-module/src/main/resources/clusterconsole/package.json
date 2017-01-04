@@ -1,0 +1,45 @@
+{
+  "name": "odl-cluster-console",
+  "version": "0.1.0",
+  "description": "Opendaylight Cluster Console UI",
+  "main": "main.js",
+  "devDependencies": {
+    "gulp-bower": "0.0.13"
+  },
+  "dependencies": {
+    "angular-bind-notifier": "^1.1.7",
+    "bower": "1.7.9",
+    "bower-npm-resolver": "0.4.0",
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-connect": "^5.0.0",
+    "gulp-install": "^0.6.0",
+    "gulp-less": "^3.1.0",
+    "gulp-open": "^2.0.0",
+    "gulp-replace-task": "^0.11.0",
+    "gulp-util": "^3.0.7",
+    "run-sequence": "^1.1.5",
+    "angular-animate": "~1.4.12",
+    "angular-aria": "~1.4.12",
+    "angular-material": "1.0.5",
+    "roboto-fontface": "~0.4.3",
+    "angular-chart.js": "1.0.1",
+    "angular-material-data-table": "~0.9.11",
+    "bootstrap-material-design-icons": "2.2.0",
+    "angular-messages": "~1.4.0",
+    "angular-bind-notifier": "^1.1.7",
+    "angular-bootstrap-colorpicker": "~3.0.25"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git clone git@cto-github.cisco.com:dmalacho/cluster-console.git"
+  },
+  "author": "Daniel Malachovsky",
+  "license": "ISC",
+  "keywords": [
+    "odl",
+    "clustering",
+    "angular"
+  ]
+}

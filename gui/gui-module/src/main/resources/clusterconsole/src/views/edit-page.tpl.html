@@ -1,0 +1,39 @@
+<md-dialog>
+    <form name="editTabDialogForm">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Edit Statistics Page</h2>
+                <span flex></span>
+                <md-button ng-click="editPageCtrl.closeDialog()">Close dialog</md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content class="dialog_500">
+            <div layout="column" class="layout-padding-lr15">
+                <div layout="row">
+                    <md-input-container flex >
+                        <label>Page Name</label>
+                        <input ng-model="editPageCtrl.newName"
+                               ng-value="editPageCtrl.page.data.name"
+                               aria-label="Page name"
+                               name="pageData"
+                               required></input>
+                        <div ng-messages="editTabDialogForm.pageData.$error" multiple md-auto-hide="false">
+                            <div ng-message="required">
+                                Required value
+                            </div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button ng-click="editPageCtrl.closeDialog()" class="md-primary">
+                Close
+            </md-button>
+            <md-button ng-click="editPageCtrl.save()" ng-disabled="editTabDialogForm.$invalid" style="margin-right:20px;" class="md-primary">
+                Save
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

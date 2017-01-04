@@ -1,0 +1,124 @@
+<md-toolbar class="md-theme-light">
+    <h1 class="md-toolbar-tools">SETTINGS</h1>
+</md-toolbar>
+<md-content layout="column" flex class="content" ng-controller="SettingsController as settingsCtrl" ng-init="settingsCtrl.init(main.settings)">
+    <md-tabs md-dynamic-height md-border-bottom>
+        <md-tab label="Auto-refresh & colors">
+            <md-content layout="column" layout-margin>
+                <h4>Automatic refresh settings</h4>
+                <md-input-container flex>
+                    <md-slider-container layout="column">
+                        <span>Polling interval (in seconds): {{settingsCtrl.settings.data['polling-interval']}}</span>
+                        <md-slider flex
+                                   ng-model="settingsCtrl.settings.data['polling-interval']"
+                                   min="10"
+                                   max="60"
+                                   aria-label="Polling interval"
+                                   id="polling-interval-slider"
+                                   class="md-accent">
+                        </md-slider>
+                    </md-slider-container>
+                </md-input-container>
+                <div layout="row" layout-align="end start">
+                    <md-button ng-click="settingsCtrl.cancel()">
+                        Cancel
+                    </md-button>
+                    <md-button ng-click="settingsCtrl.applyValues('polling-interval', false);">
+                        Apply
+                    </md-button>
+                </div>
+                <h4>Series colors</h4>
+                <md-input-container layout="row" ng-repeat="(key, value) in settingsCtrl.settings.data['members-color']">
+                    <div colorpicker
+                         ng-model="settingsCtrl.settings.data['members-color'][key]">
+                        <div class="cluster-member-color" style="background-color: {{value}};"></div>
+                    </div>
+                    <span>
+                        Cluster Member #{{key}}
+                    </span>
+                </md-input-container>
+                <div layout="row" layout-align="end start">
+                    <md-button ng-click="settingsCtrl.cancel()">
+                        Cancel
+                    </md-button>
+                    <md-button ng-click="settingsCtrl.applyValues('members-color', true);">
+                        Apply
+                    </md-button>
+                </div>
+            </md-content>
+        </md-tab>
+        <md-tab label="Thresholds">
+            <md-content layout-margin>
+                <h4>Threshold settings</h4>
+                <p>If shard metric exceeds the defined threshold, it will be marked with an exclamation mark. If you do not want a metric to be checked, define its threshold '0'.</p>
+                <form name="thresholdForm" ng-submit="saveThresholds()">
+                    <md-input-container layout="column" ng-repeat="(key, value) in settingsCtrl.settings.data['shard-stats-threshold']">
+
+                        <span flex="50">{{key}}</span>
+                        <input required
+                               type="number"
+                               name="{{key}}"
+                               ng-model="settingsCtrl.settings.data['shard-stats-threshold'][key]"
+                               min="0"
+                               aria-label="{{key}}" />
+
+                        <div ng-messages="thresholdForm[key].$error" multiple md-auto-hide="false">
+                            <div ng-message="min">
+                                Min. value must be 0
+                            </div>
+                            <div ng-message="required">
+                                Required value - use '0' if you do not want threshold to be checked for '{{key}}' metric
+                            </div>
+                        </div>
+                    </md-input-container>
+                    <!--<md-button ng-class="md-primary" type="submit" ng-disabled="threshold.$invalid">Save</md-button>-->
+                    <div layout="row" layout-align="end start">
+                        <md-button ng-click="settingsCtrl.cancel()">
+                            Cancel
+                        </md-button>
+                        <md-button ng-click="settingsCtrl.applyValues('shard-stats-threshold', true)"
+                                   ng-disabled="thresholdForm.$invalid">
+                            Apply
+                        </md-button>
+                    </div>
+                </form>
+            </md-content>
+        </md-tab>
+        <md-tab label="Gauges">
+            <md-content layout="column" layout-margin>
+                <h4>Maximum metric values</h4>
+                <p>Define maximum expected value for each metric.</p>
+                <form name="gaugeForm" ng-submit="saveMaxGauges()">
+                    <md-input-container layout="column" ng-repeat="metricName in settingsCtrl.constants.MEMBER_METRIC_NAMES.controller">
+
+                        <span flex="50">{{metricName}}</span>
+                        <input required
+                               type="number"
+                               name="{{metricName}}"
+                               ng-model="settingsCtrl.settings.data['gauge-max-values'][metricName]"
+                               min="0"
+                               aria-label="{{metricName}}" />
+                        <div ng-messages="gaugeForm[metricName].$error" multiple md-auto-hide="true">
+                            <div ng-message="min">
+                                Min. value must be 0
+                            </div>
+                            <div ng-message="required">
+                                Required value
+                            </div>
+                        </div>
+                    </md-input-container>
+                    <!--<md-button ng-class="md-primary" type="submit" ng-disabled="threshold.$invalid">Save</md-button>-->
+                    <div layout="row" layout-align="end start">
+                        <md-button ng-click="settingsCtrl.cancel()">
+                            Cancel
+                        </md-button>
+                        <md-button ng-click="settingsCtrl.applyValues('gauge-max-values', true)"
+                                   ng-disabled="gaugeForm.$invalid">
+                            Apply
+                        </md-button>
+                    </div>
+                </form>
+            </md-content>
+        </md-tab>
+    </md-tabs>
+</md-content>

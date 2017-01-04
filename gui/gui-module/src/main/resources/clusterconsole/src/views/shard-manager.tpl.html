@@ -1,0 +1,67 @@
+<md-content layout="column"
+            flex
+            ng-init="shardManager.init(main.shardList, main.settings);"
+            class="content shardManager">
+    <div layout="row">
+        <div layout="column"><h3>Shard Manager</h3></div>
+    </div>
+    <div layout="column">
+        <div md-whiteframe="1" flex layout="column">
+
+            <md-content layout="row" layout-margin>
+                <section flex="15" layout="row">
+                    <md-list class="shardLists">
+                        <md-list-item class="" ng-class="{'active': shardManager.selectedShard === shard}"
+                                      ng-repeat="shard in shardManager.shardList.list"
+                                      ng-click="shardManager.selectShard(shard)">
+                            <div class="md-list-item-text" layout="row">
+                                {{ shard.data.name }}-{{ shard.data.status }}
+                                <i class="material-icons" ng-show="shard.thresholdsExceeded">
+                                    error_outline
+                                    <md-tooltip>{{shard.thresholdsExceeded}} metrics exceeding threshold</md-tooltip>
+                                </i>
+                            </div>
+                        </md-list-item>
+                    </md-list>
+                    <md-divider></md-divider>
+                </section>
+                <md-table-container flex>
+                    <table md-table>
+                        <thead md-head>
+                        <tr md-row>
+                            <th md-column>metric name</th>
+                            <th md-column
+                                class="center"
+                                ng-repeat="member in main.clusterMemberList.list">
+                                {{member.data.name}}
+                            </th>
+                        </tr>
+                        <tr md-row>
+                            <td md-cell>raft-state</td>
+                            <td md-cell
+                                class="center"
+                                ng-repeat="member in main.clusterMemberList.list">
+                                {{shardManager.selectedShard.data.members.list[member.data.name].data['raft-state']}}
+                            </td>
+                        </tr>
+                        <tr md-row ng-repeat="metricName in shardManager.metricNames">
+                            <td md-cell>{{metricName}}</td>
+                            <td md-cell
+                                class="center"
+                                ng-class="{'error': shardManager.checkCurrentShardThreshold(member.data.name, metricName)}"
+                                ng-repeat="member in main.clusterMemberList.list">
+                                {{ shardManager.selectedShard.data.members.list[member.data.name].data.statistics.data[metricName].last() }}
+                                <i class="material-icons" ng-show="shardManager.checkCurrentShardThreshold(member.data.name, metricName)">
+                                    error_outline
+                                    <md-tooltip>exceeding threshold</md-tooltip>
+                                </i>
+                            </td>
+                        </tr>
+                    </table>
+                </md-table-container>
+            </md-content>
+        </div>
+
+
+    </div>
+</md-content>

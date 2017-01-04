@@ -1,0 +1,32 @@
+<div layout="row" class="ccWrapper" flex ng-controller="ClusterConsoleCtrl as main">
+    <div layout="column" role="main" flex class="master-view">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <md-button ui-sref-active="activeMenuItem" ui-sref="main.clusterconsole.index.dashboard">Dashboard</md-button>
+                <md-button ui-sref-active="activeMenuItem" ui-sref="main.clusterconsole.index.statistics">Statistics</md-button>
+                <md-button ui-sref-active="activeMenuItem" ui-sref="main.clusterconsole.index.shard-manager">
+                    Shard Manager
+                    <i class="material-icons menuError" ng-show="main.shardList.shardsWithExceededThreshold > 0">
+                        error_outline
+                        <md-tooltip>{{shard.thresholdsExceeded}} metrics exceeding threshold</md-tooltip>
+                    </i>
+                </md-button>
+                <span flex></span>
+                <md-switch ng-model="main.settings.data['auto-refresh']" aria-label="Auto-refresh">
+                    Auto-refresh
+                    <md-tooltip>
+                        Polling interval: {{main.settings.data['polling-interval']}} seconds
+                    </md-tooltip>
+                </md-switch>
+                <md-switch ng-model="main.generateShardDummyStats">Use dummy data for shard metrics</md-switch>
+                <md-button ng-click="main.showSettings()">Settings</md-button>
+
+            </div>
+        </md-toolbar>
+        <md-content md-scroll-y flex ui-view></md-content>
+        <md-sidenav class="md-sidenav-right md-whiteframe-4dp"
+                    md-component-id="settingsPanel"
+                    ng-include src="'src/app/clusterconsole/views/settings.tpl.html'">
+        </md-sidenav>
+    </div>
+</div>

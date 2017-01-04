@@ -1,0 +1,60 @@
+<div md-whiteframe="1">
+    <cc-widget-toolbar widget-ctrl="lineCtrl">
+        {{lineCtrl.metric}} [{{lineCtrl.node === 'shard' ? lineCtrl.shard.name + ' ' + lineCtrl.shard.status : lineCtrl.node}}]
+    </cc-widget-toolbar>
+    <div layout="row" layout-wrap>
+        <div flex="33"
+             ng-if="lineCtrl.node !== 'shard' && lineCtrl.members.list.length"
+             ng-repeat="member in lineCtrl.members.list"
+             class="individualChart"
+             layout="column">
+            <h3>{{member.data.name}}</h3>
+            <div ng-if="member.data.statistics.data[lineCtrl.metric][lineCtrl.node].values.length">
+                <canvas id="line" class="chart chart-line"
+                    chart-data="[member.data.statistics.data[lineCtrl.metric][lineCtrl.node].values]"
+                    chart-labels="member.data.statistics.data[lineCtrl.metric][lineCtrl.node].labels"
+                    chart-options="lineCtrl.chart.options"
+                    chart-colors="[member.data.color]"
+                    height="300">
+                </canvas>
+            </div>
+            <div layout="row" layout-align="center center" flex="33"
+                 ng-if="!member.data.statistics.data[lineCtrl.metric][lineCtrl.node].values.length">
+                <md-progress-circular md-mode='indeterminate' md-diameter="96"></md-progress-circular>
+                Waiting for data!
+            </div>
+        </div>
+        <div layout="row" layout-align="center center" flex
+             ng-if="lineCtrl.node !== 'shard' && !lineCtrl.members.list.length">
+            <md-progress-circular md-mode='indeterminate' md-diameter="96"></md-progress-circular>
+            Waiting for data!
+        </div>
+
+        <div flex="33"
+             ng-if="lineCtrl.node === 'shard' && lineCtrl.shardMemberListKeys.length"
+             ng-repeat="shardMember in lineCtrl.shardMemberListKeys"
+             class="individualChart"
+             layout="column">
+            <h3>{{shardMember}}</h3>
+            <div ng-if="lineCtrl.shardObject.data.members.list[shardMember].data.statistics.data[lineCtrl.metric].length">
+                <canvas id="line" class="chart chart-line"
+                        chart-data="[lineCtrl.shardData[shardMember].values, lineCtrl.getThresholdData(shardMember, lineCtrl.metric)]"
+                        chart-labels="lineCtrl.shardData[shardMember].labels"
+                        chart-options="lineCtrl.chart.options"
+                        chart-colors="[lineCtrl.members.list[$index].data.color, '#ff0000']"
+                        height="300">
+                </canvas>
+            </div>
+            <div layout="row" layout-align="center center" flex="33"
+                 ng-if="!lineCtrl.shardObject.data.members.list[shardMember].data.statistics.data[lineCtrl.metric].length">
+                <md-progress-circular md-mode='indeterminate' md-diameter="96"></md-progress-circular>
+                Waiting for data!
+            </div>
+        </div>
+        <div layout="row" layout-align="center center" flex
+             ng-if="lineCtrl.node === 'shard' && !lineCtrl.shardMemberListKeys.length">
+            <md-progress-circular md-mode='indeterminate' md-diameter="96"></md-progress-circular>
+            Waiting for data!
+        </div>
+    </div>
+</div>

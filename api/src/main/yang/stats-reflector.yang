@@ -1,0 +1,235 @@
+module stats-reflector {
+    yang-version 1;
+    namespace "urn:opendaylight:params:xml:ns:yang:stats-reflector";
+    prefix "stats-reflector";
+
+    revision "2015-01-05" {
+        description "Initial revision of stats-reflector model";
+    }
+
+    import ietf-inet-types {
+        prefix inet;
+    }
+
+    rpc get-stats {
+        input {
+            leaf cluster-member {
+                description "IP address of cluster member to collect statistics from.";
+                type inet:ip-address;
+            }
+
+            leaf metric-name {
+                description "Name of the metric to collect, or can be left empty to collect all metrics.
+
+                Current supported values are:
+                CPU:Usage
+                Heap:Memory:Usage
+                NonHeap:Memory:Usage
+                Current:Loaded:Classes
+                Total:Loaded:Classes
+                Live:Thread:Count
+                Live:Daemon:Thread:Count
+                Peak:Thread:Count";
+
+                type string;
+                default "";
+            }
+
+            leaf node-id {
+                description "A string of the form Controller:<IP> or Machine:<IP> where <IP> is the address of a cluster member";
+                type string;
+            }
+
+            leaf data-category {
+                description "String which represents the data category of the metric which is to be collected. Currently only EXTERNAL is supported";
+                type string;
+                default "EXTERNAL";
+            }
+/*
+            leaf from {
+                description "An integer which sets the earliest time (in milliseconds from the Unix epoch?) from which data should be collected. Defaults to 0.";
+                type uint64;
+                default 0;
+            }
+
+            leaf until {
+                description "An integer which sets the latest time (in milliseconds from the Unix epoch?) from which data should be collected. Defaults to 240000000000.";
+                type uint64;
+                default 240000000000;
+            }
+*/
+        }
+
+        output {
+            list data-points {
+                leaf metric-name {
+                    type string;
+                }
+
+                leaf metric-value {
+                    type string;
+                }
+
+                leaf time-stamp {
+                    type string;
+                }
+
+                leaf node-id {
+                    type string;
+                }
+
+                leaf data-category {
+                    type string;
+                }
+            }
+        }
+    }
+
+    rpc get-cluster-members {
+        input {}
+
+        output {
+            list cluster-members {
+                leaf member-name {
+                    type string;
+                }
+
+                leaf member-address {
+                    type inet:ip-address;
+                }
+
+                leaf-list local-shards {
+                    description "List of shards which are present on this cluster member. Currently not implemented and always returns an empty list";
+                    type string;
+                }
+
+                leaf voter {
+                    description "Whether or not this member can vote in leader elections. Currently not implemented and always returns true";
+                    type boolean;
+                }
+            }
+        }
+    }
+
+    rpc get-general-runtime-info-mbean {
+        input {
+            leaf member-address {
+                description "IP address of cluster member to collect statistics from";
+                type inet:ip-address;
+                mandatory true;
+            }
+
+            leaf status {
+                description "String representing operational or config. Defaults to operational";
+                type string;
+                default "operational";
+            }
+        }
+
+        output {
+            leaf timestamp {
+                type string;
+            }
+
+            leaf transaction-creation-rate-limit {
+                type string;
+            }
+        }
+    }
+
+    rpc get-shard-mbean {
+        input {
+            leaf member-address {
+                description "IP address of cluster member to collect statistics from";
+                type inet:ip-address;
+                mandatory true;
+            }
+
+            leaf member-name {
+                description "Name of cluster member to collect statistics from";
+                type string;
+                mandatory true;
+            }
+
+            leaf status {
+                description "String representing operational or config. Defaults to operational";
+                type string;
+                default "operational";
+             }
+
+            leaf shard {
+                description "String representing shard name. Defaults to inventory";
+                type string;
+                default "inventory";
+            }
+        }
+
+        output {
+            leaf timestamp {
+                type string;
+            }
+
+            leaf in-memory-journal-log-size {
+                type int32;
+            }
+
+            leaf replicated-to-all-index {
+                type int32;
+            }
+
+            leaf last-index {
+                type int32;
+            }
+
+            leaf last-applied {
+                type int32;
+            }
+
+            leaf pending-tx-commit-queue-size {
+                type int32;
+            }
+
+            leaf commit-index {
+                type int32;
+            }
+
+            leaf raft-state {
+                type string;
+            }
+
+            list follower-info {
+                leaf id {
+                    type string;
+                }
+
+                leaf time-since-last-activity {
+                    type string;
+                }
+
+                leaf match-index {
+                    type int32;
+                }
+            }
+        }
+    }
+
+    rpc get-instrumentation {
+        input {}
+
+        output {
+            list requests {
+                leaf request-name {
+                    type string;
+                }
+
+                leaf number-of-requests {
+                    type int64;
+                }
+
+                leaf average-latency {
+                    type string;
+                }
+            }
+        }
+    }
+}

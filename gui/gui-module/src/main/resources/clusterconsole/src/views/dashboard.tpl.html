@@ -1,0 +1,158 @@
+<md-content layout="column" flex class="content dashboard">
+    <div layout="row">
+        <div md-whiteframe="1" flex="50" layout="column">
+            <div layout="row">
+                <h5><strong>Cluster members</strong></h5>
+            </div>
+            <div layout="row" layout-align="center start">
+                <md-table-container flex>
+                    <table md-table>
+                        <thead md-head md-order="dboard.membersTableOrder">
+                            <tr md-row>
+                                <th md-column><span>Color</span></th>
+                                <th md-column md-order-by="data.name"><span>Name</span></th>
+                                <th md-column md-order-by="data.address"><span>Address</span></th>
+                                <th md-column md-order-by="data.voter"><span>Voter</span></th>
+                            </tr>
+                        </thead>
+                        <tbody md-body>
+                            <tr md-row ng-repeat="member in main.clusterMemberList.list | orderBy: dboard.membersTableorder">
+                                <td md-cell class="pointer"><div class="cluster-member-color" style="background:{{member.data.color}};"></div></td>
+                                <td md-cell class="pointer">{{ member.data.name }}</td>
+                                <td md-cell class="pointer">{{ member.data.address }}</td>
+                                <td md-cell class="pointer">{{ member.data.voter }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+            </div>
+            <md-divider></md-divider>
+            <div layout="row">
+                <h5><strong>Shards</strong></h5>
+            </div>
+            <div layout="row" flex layout-align="center start" class="shardLists">
+                <md-table-container flex>
+                    <table md-table>
+                        <thead md-head md-order="dboard.shardsTableOrder">
+                        <tr md-row>
+                            <th md-column md-order-by="data.name"><span>Shard</span></th>
+                            <th md-column ng-repeat="member in main.clusterMemberList.list" md-order-by="data.members.list['{{member.data.name}}'].data['raft-state']"><span>{{member.data.name}}</span></th>
+                        </tr>
+                        </thead>
+                        <tbody md-body>
+                        <tr md-row ng-repeat="shard in main.shardList.list | orderBy: dboard.shardsTableOrder">
+                            <td md-cell>
+                                <strong>
+                                    <a ui-sref="main.clusterconsole.index.shard-manager({shard: shard.data.name + '-' + shard.data.status})">
+                                        {{ shard.data.name + '-' + shard.data.status }}
+                                        <i class="material-icons" ng-show="shard.thresholdsExceeded">
+                                            error_outline
+                                            <md-tooltip>{{shard.thresholdsExceeded}} metrics exceeding threshold</md-tooltip>
+                                        </i>
+                                    </a>
+                                </strong>
+
+                            </td>
+                            <td md-cell ng-repeat="member in main.clusterMemberList.list">
+                                <span ng-class="{strong: shard.data.members.list[member.data.name].data['raft-state'] === 'Leader'}">
+                                    {{shard.data.members.list[member.data.name].data['raft-state']}}
+                                </span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+            </div>
+        </div>
+        <div md-whiteframe="1" layout="column" flex="50">
+            <md-tabs md-dynamic-height md-border-bottom md-autoselect md-selected="dboard.dashboardPageList.selectedPage">
+                <md-tab ng-repeat="page in dboard.dashboardPageList.list">
+                    <md-tab-label>
+                        {{ page.data.name }}
+                        <span flex></span>
+            <span ng-click="dboard.openEditPageDialog(page); $event.stopPropagation();" style="padding-left: 10px; align: right">
+                <i class="mdi mdi-edit"></i>
+            </span>
+            <span ng-click="dboard.removePage(page); $event.stopPropagation();">
+                <i class="mdi mdi-close"></i>
+            </span>
+                    </md-tab-label>
+                    <md-tab-body>
+                        <md-content layout="column"
+                                    flex class="content"
+                                    ng-controller="PageController as pageCtrl"
+                                    ng-init="pageCtrl.init('dashboard', main.shardList)">
+                            <div layout="row" flex>
+                                <div layout="row" flex>
+                                    <span flex></span>
+                                    <md-button ng-click="pageCtrl.openAddWidgetDialog(page)">
+                                        <i class="mdi mdi-add mdi-2x"></i> Add Widget
+                                    </md-button>
+                                    <md-button ng-click="pageCtrl.resetAllStatisticsData()">
+                                        <i class="mdi mdi-delete-sweep mdi-2x" ></i> Reset All Data
+                                    </md-button>
+                                    <md-button ng-click="pageCtrl.clearWidgetList(page)">
+                                        <i class="mdi mdi-close mdi-2x" ></i> Remove All Widgets
+                                    </md-button>
+                                </div>
+                            </div>
+
+                            <div ng-repeat="widget in page.data['widget-list'].list">
+                                <cc-doughnut-gauge ng-if="widget.data.type === 'gauge'"
+                                                gauge-size="150"
+                                                members="main.clusterMemberList"
+                                                metric="widget.data['metric-names'][0]"
+                                                max-values="main.settings.data['gauge-max-values']"
+                                                node="widget.data['metric-type']"
+                                                page="page"
+                                                widget-id="widget.data.id"
+                                                showSettingsCbk="main.showSettings"
+                                                shards-data="main.shardList"
+                                                widget-types="dashboard">
+                                </cc-doughnut-gauge>
+
+                                <cc-radar-chart ng-if="widget.data.type === 'radar'"
+                                             metric="widget.data['metric-names']"
+                                             members="main.clusterMemberList"
+                                             node="widget.data['metric-type']"
+                                             page="page"
+                                             widget-id="widget.data.id">
+                                </cc-radar-chart>
+
+                                <cc-line-chart ng-if="widget.data.type === 'combined' || widget.data.type === 'individual'"
+                                            widget-id="widget.data.id"
+                                            widget-type="widget.data.type"
+                                            metric="widget.data['metric-names'][0]"
+                                            members="main.clusterMemberList"
+                                            shards-data="main.shardList"
+                                            shard="widget.data.shard"
+                                            node="widget.data['metric-type']"
+                                            page="page"
+                                            shard-thresholds="main.settings.data['shard-stats-threshold']"
+                                            colors="main.settings.data['members-color']"
+                                            widget-types="dashboard">
+                                </cc-line-chart>
+                            </div>
+
+
+                        </md-content>
+                    </md-tab-body>
+                </md-tab>
+                <md-tab>
+                    <md-tab-label>
+                        <span ng-click="dboard.openAddPageDialog(); $event.stopPropagation();">
+                            <i class="mdi mdi-add mdi-2x"></i>
+                        </span>
+                    </md-tab-label>
+                </md-tab>
+            </md-tabs>
+            <md-content layout="column"
+                        layout-align="center center"
+                        flex="100">
+                <h4 ng-if="!dboard.dashboardPageList.list.length">
+                    Please add tab(s) and widget(s).
+                </h4>
+            </md-content>
+        </div>
+    </div>
+</md-content>

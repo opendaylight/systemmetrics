@@ -1,0 +1,38 @@
+<md-dialog>
+    <form name="addTabDialogForm">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Add Statistics Page</h2>
+                <span flex></span>
+                <md-button ng-click="addPageCtrl.closeDialog()">Close dialog</md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content class="dialog_500">
+            <div layout="column" class="layout-padding-lr15">
+                <div layout="row">
+                    <md-input-container flex >
+                        <label>Page Name</label>
+                        <input ng-model="addPageCtrl.page.data.name"
+                               aria-label="Page name"
+                               name="pageData"
+                               required></input>
+                        <div ng-messages="addTabDialogForm.pageData.$error" multiple md-auto-hide="false">
+                            <div ng-message="required">
+                                Required value
+                            </div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button ng-click="addPageCtrl.closeDialog()" class="md-primary">
+                Close
+            </md-button>
+            <md-button ng-click="addPageCtrl.save()" ng-disabled="addTabDialogForm.$invalid" style="margin-right:20px;" class="md-primary">
+                Save
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

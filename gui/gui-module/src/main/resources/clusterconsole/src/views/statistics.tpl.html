@@ -1,0 +1,65 @@
+<div class="statistics" layout="column" flex="100">
+    <md-tabs md-dynamic-height md-border-bottom md-autoselect md-selected="stats.statisticsPageList.selectedPage">
+        <md-tab ng-repeat="page in stats.statisticsPageList.list">
+            <md-tab-label>
+                {{ page.data.name }}
+                <span flex></span>
+                <span ng-click="stats.openEditPageDialog(page); $event.stopPropagation();" style="padding-left: 10px; align: right">
+                    <i class="mdi mdi-edit"></i>
+                </span>
+                <span ng-click="stats.removePage(page); $event.stopPropagation();">
+                    <i class="mdi mdi-close"></i>
+                </span>
+            </md-tab-label>
+            <md-tab-body>
+                <md-content layout="column"
+                            flex
+                            class="content"
+                            ng-controller="PageController as pageCtrl"
+                            ng-init="pageCtrl.init('statistics', main.shardList)">
+                    <div layout="row" flex>
+                        <div layout="row" flex>
+                            <span flex></span>
+                            <md-button ng-click="pageCtrl.openAddWidgetDialog(page)">
+                                <i class="mdi mdi-add mdi-2x"></i> Add Widget
+                            </md-button>
+                            <md-button ng-click="pageCtrl.resetAllStatisticsData()">
+                                <i class="mdi mdi-delete-sweep mdi-2x" ></i> Reset All Data
+                            </md-button>
+                            <md-button ng-click="pageCtrl.clearWidgetList(page)">
+                                <i class="mdi mdi-close mdi-2x" ></i> Remove All Widgets
+                            </md-button>
+                        </div>
+                    </div>
+                    <cc-line-chart ng-repeat="widget in page.data['widget-list'].list"
+                                widget-id="widget.data.id"
+                                widget-type="widget.data.type"
+                                metric="widget.data['metric-names'][0]"
+                                members="main.clusterMemberList"
+                                shards-data="main.shardList"
+                                shard="widget.data.shard"
+                                node="widget.data['metric-type']"
+                                page="page"
+                                shard-thresholds="main.settings.data['shard-stats-threshold']"
+                                colors="main.colorsFiltered"
+                                widget-types="statistics">
+                    </cc-line-chart>
+                </md-content>
+            </md-tab-body>
+        </md-tab>
+        <md-tab>
+            <md-tab-label >
+                <span ng-click="stats.openAddPageDialog(); $event.stopPropagation();">
+                    <i class="mdi mdi-add mdi-2x"></i>
+                </span>
+            </md-tab-label>
+        </md-tab>
+    </md-tabs>
+    <md-content layout="column"
+                layout-align="center center"
+                flex="100">
+        <h4 ng-if="!stats.statisticsPageList.list.length">
+            Please add tab(s) and widget(s).
+        </h4>
+    </md-content>
+</div>

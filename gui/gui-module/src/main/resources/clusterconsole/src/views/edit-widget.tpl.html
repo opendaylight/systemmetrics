@@ -1,0 +1,153 @@
+<md-dialog ng-cloak>
+    <form name="editWidgetDialogForm">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Edit Statistics Widget</h2>
+                <span flex></span>
+                <md-button ng-click="editWidgetCtrl.closeDialog()">Close dialog</md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content ng-class="editWidgetCtrl.showPrevieWidget ? 'dialog_1000' : 'dialog_500'">
+            <div layout="row">
+                <div layout="column" class="layout-padding-lr15" flex>
+                    <div layout="row">
+                        <md-input-container flex >
+                            <label>Widget Type</label>
+                            <md-select ng-model="editWidgetCtrl.widget.data.type"
+                                       required
+                                       name="widgetType"
+                                       aria-label="Widget type"
+                                       ng-change="editWidgetCtrl.resetWidgetShard(); editWidgetCtrl.resetValidity()"
+                                       md-on-open="editWidgetCtrl.showPrevieWidget=true;"
+                                       md-on-close="editWidgetCtrl.showPrevieWidget=false;">
+                                <!-- TODO: move this array into constants! -->
+                                <md-option ng-repeat="widgetType in editWidgetCtrl.widgetTypes"
+                                           ng-value="widgetType.toLowerCase()"
+                                           ng-mouseover="editWidgetCtrl.showPrevieWidget = widgetType.toLowerCase()">
+                                           {{ widgetType }}</md-option>
+                            </md-select>
+                            <div ng-messages="editWidgetDialogForm.widgetType.$error" multiple md-auto-hide="false">
+                                <div ng-message="required">
+                                    Required value
+                                </div>
+                            </div>
+                        </md-input-container>
+                    </div>
+                    <div layout="row">
+                        <md-input-container flex >
+                            <label>Metric Type</label>
+                            <md-select ng-model="editWidgetCtrl.widget.data['metric-type']"
+                                       name="metricType"
+                                       required
+                                       ng-change="editWidgetCtrl.initWidgetShard(); editWidgetCtrl.initShardMetricName(); editWidgetCtrl.resetValidity()"
+                                       aria-label="Metric type"
+                                       ng-disabled="!editWidgetCtrl.widget.data.type">
+                                <md-option ng-repeat="metricType in editWidgetCtrl.memberMetricTypes"
+                                           ng-value="metricType"
+                                           ng-hide="editWidgetCtrl.widget.data.type === 'gauge' && metricType === 'shard'">{{ metricType }}</md-option>
+                            </md-select>
+                            <div ng-messages="editWidgetDialogForm.metricType.$error" multiple md-auto-hide="false">
+                                <div ng-message="required">
+                                    Required value
+                                </div>
+                            </div>
+                        </md-input-container>
+                    </div>
+
+                    <div layout="row">
+                        <md-input-container flex >
+                            <label>Shard</label>
+                            <md-select ng-model="editWidgetCtrl.widgetShardIndex"
+                                       name="shard"
+                                       ng-required="editWidgetCtrl.widget.data['metric-type']==='shard'"
+                                       aria-label="Shard"
+                                       ng-change="editWidgetCtrl.updateWidgetShard(); editWidgetCtrl.resetValidity()"
+                                       ng-disabled="editWidgetCtrl.widget.data['metric-type'] !== 'shard'">
+                                <md-option ng-repeat="(key, shard) in editWidgetCtrl.shardList.list" ng-value="key">
+                                    {{ shard.data.name }} {{ shard.data.status }}
+                                </md-option>
+                            </md-select>
+                            <div ng-messages="editWidgetDialogForm.shard.$error" multiple md-auto-hide="false">
+                                <div ng-message="required">
+                                    Required value
+                                </div>
+                            </div>
+                        </md-input-container>
+                    </div>
+                    <!-- Input for line and gauge widgets -->
+                    <div layout="row" ng-if="editWidgetCtrl.widget.data.type !== 'radar'">
+                        <md-input-container flex ng-cloak>
+                            <label>Metric Name</label>
+                            <md-select ng-model="editWidgetCtrl.widgetMetricName"
+                                       name="metricName"
+                                       ng-required="editWidgetCtrl.widget.data['metric-type']!==''"
+                                       ng-disabled="editWidgetCtrl.widget.data['metric-type']===''"
+                                       ng-change="editWidgetCtrl.updateWidgetMetricName(); editWidgetCtrl.resetValidity();"
+                                       aria-label="Metric name">
+                                <md-option ng-repeat="metricName in editWidgetCtrl.memberMetricNames[editWidgetCtrl.widget.data['metric-type']]"
+                                           ng-value="metricName">
+                                    {{ metricName }}
+                                </md-option>
+                            </md-select>
+                            <div ng-messages="editWidgetDialogForm.metricName.$error" multiple md-auto-hide="false">
+                                <div ng-message="required">
+                                    Required value
+                                </div>
+                                <div ng-message="unique">
+                                    Widget with this parameters already exists!
+                                </div>
+                            </div>
+                        </md-input-container>
+                    </div>
+                    <!-- Input for radar widget -->
+                    <div layout="row" ng-if="editWidgetCtrl.widget.data.type === 'radar'">
+                        <md-input-container flex ng-cloak>
+                            <label ng-if="!editWidgetDialogForm.metricName.$error.required">Metric Name</label>
+                            <md-select ng-model="editWidgetCtrl.widget.data['metric-names']"
+                                       name="metricName"
+                                       ng-required="editWidgetCtrl.widget.data['metric-type']!=='' && !editWidgetCtrl.metricsSelectionOpened"
+                                       ng-disabled="editWidgetCtrl.widget.data['metric-type']===''"
+                                       aria-label="Metric name"
+                                       multiple
+                                       md-selected-text="'Metrics selection'"
+                                       ng-change="editWidgetCtrl.resetValidity()"
+                                       md-on-open="editWidgetCtrl.metricsSelectionOpened = true;"
+                                       md-on-close="editWidgetCtrl.metricsSelectionOpened = false;">
+                                <md-optgroup label="Show Metrics">
+                                    <md-option ng-value="metricName"
+                                               ng-repeat="metricName in editWidgetCtrl.memberMetricNames[editWidgetCtrl.widget.data['metric-type']]">
+                                        {{metricName}}
+                                    </md-option>
+                                </md-optgroup>
+                            </md-select>
+                            <div ng-messages="editWidgetDialogForm.metricName.$error" multiple md-auto-hide="false">
+                                <div ng-message="required">
+                                    Required value
+                                </div>
+                                <div ng-message="unique">
+                                    Widget with this parameters already exists!
+                                </div>
+                            </div>
+                        </md-input-container>
+                    </div>
+                </div>
+                <div ng-if="editWidgetCtrl.showPrevieWidget" flex>
+                    <div layout="column" layout-align="center end">
+                        <img src="src/app/clusterconsole/assets/img/combined.JPG" width="430" ng-show="editWidgetCtrl.showPrevieWidget === 'combined'">
+                        <img src="src/app/clusterconsole/assets/img/gauge.JPG" width="430" ng-show="editWidgetCtrl.showPrevieWidget === 'gauge'">
+                        <img src="src/app/clusterconsole/assets/img/individual.JPG" width="430" ng-show="editWidgetCtrl.showPrevieWidget === 'individual'">
+                    </div>
+                </div>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button ng-click="editWidgetCtrl.closeDialog()" class="md-primary">
+                Close
+            </md-button>
+            <md-button ng-click="editWidgetCtrl.save()" ng-disabled="editWidgetDialogForm.$invalid" style="margin-right:20px;" class="md-primary">
+                Save
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

@@ -1,0 +1,226 @@
+@white: #ffffff;
+@red: #ff0000;
+@lightBlue: #40C4FF;
+@clusterMemberBorderColor: rgba(0, 0, 0, .2);
+@headingColor: rgba(0,0,0,.87);
+
+img#page_logo {
+    display:none;
+}
+
+.center{
+    text-align: center !important;
+}
+
+.ccGlobalWrapper {
+    padding-left: 0;
+    padding-right: 0;
+    font-family: 'Roboto', sans-serif;
+
+    .main {
+        height: 100%;
+
+        .ccWrapper {
+            height: 100%;
+
+            .content, .md-whiteframe-1dp{
+                padding: 10px;
+                margin: 2px;
+            }
+        }
+    }
+
+    h1, h2, h3, h4, h5, h6, span {
+        color: @headingColor;
+    }
+
+    /**
+    / Buttons
+    */
+    a.md-button span, div.md-toolbar-tools h2 {
+        color: @white;
+    }
+
+    button i.mdi {
+        vertical-align: middle;
+    }
+
+    button span {
+        vertical-align: sub;
+    }
+
+    /**
+    / Tables
+    */
+    th.md-column span, td.md-column span{
+        text-transform: uppercase;
+    }
+}
+
+.ccWrapper {
+    .activeMenuItem span {
+        border-bottom: 1px solid @white;
+    }
+
+    md-input-container .md-errors-spacer {
+        min-height: 0;
+    }
+
+    md-sidenav,
+    md-sidenav.md-locked-open,
+    md-sidenav.md-closed.md-locked-open-add-active {
+        min-width: 500px !important;
+        width: 90vw !important;
+        max-width: 500px !important;
+    }
+
+    md-sidenav {
+        md-toolbar {
+            h1.md-toolbar-tools {
+                color: @white;
+            }
+        }
+    }
+
+    .menuError{
+        color: @white;
+        vertical-align: text-top;
+    }
+}
+
+.shardManager{
+
+    .shardLists{
+
+        padding: 1px 0 0 0;
+
+        .active{
+            border-right: 3px inset @lightBlue;
+        }
+
+        md-list-item{
+            min-height: 56px;
+
+            i.material-icons{
+                line-height: 30px;
+                margin-left: 10px;
+                color: @red;
+            }
+        }
+    }
+
+    table{
+        i.material-icons{
+            vertical-align: text-top !important;
+        }
+
+        .error{
+            color: @red !important;
+            text-indent: 17px !important;
+
+            i{
+                text-indent: 0;
+            }
+        }
+
+        td {
+            font-size: 15px !important;
+        }
+
+        th {
+            font-size: 14px !important;
+        }
+    }
+
+}
+
+.statistics {
+    height: 100%;
+
+    .individualChart {
+        height: 350px;
+    }
+}
+
+.cluster-member-color {
+    float: left;
+    width: 20px;
+    height: 20px;
+    margin: 5px;
+    border: 1px solid @clusterMemberBorderColor;
+}
+
+.dashboard {
+    .gaugeMetricName {
+        text-align: center;
+        word-wrap: break-word;
+    }
+
+    /**
+    * Member colors
+    */
+
+
+    th span {
+        font-size: 14px !important;
+    }
+
+    td {
+        font-size: 15px !important;
+    }
+}
+
+.md-toolbar-tools{
+    input{
+        border: none;
+        outline: none;
+    }
+
+    md-switch {
+        font-size: 75%;
+    }
+
+    span {
+        color: @white;
+    }
+}
+
+md-tooltip span{
+    color: @white !important;
+}
+
+md-backdrop.md-select-backdrop{
+    z-index: 100;
+}
+
+/**
+/ Dialog
+*/
+
+.dialog_500 {
+    width: 500px;
+    padding: 10px;
+}
+
+md-dialog div.md-toolbar-tools {
+    h2, span {
+        color: @white;
+    }
+}
+
+.strong {
+    font-weight: bold;
+}
+
+.color_box {
+	width: 15px;
+	height: 15px;
+    border: 1px solid gray;
+    border-radius: 3px;
+
+}
+
+.dialog_1000 {
+    width: 1000px;
+    padding: 10px;
+}

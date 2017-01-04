@@ -1,0 +1,38 @@
+<div md-whiteframe="1" flex>
+	<cc-widget-toolbar widget-ctrl="gaugeCtrl">
+		{{gaugeCtrl.metric}} [{{gaugeCtrl.node}}]
+	</cc-widget-toolbar>
+	<div layout="row" flex>
+		<div layout="row" flex layout-wrap>
+			<div layout="column" layout-align="center center" flex="33" ng-repeat="member in gaugeCtrl.gaugeData" ng-if="gaugeCtrl.gaugeData.length">
+				<div layout="column" layout-align="center center" ng-if="gaugeCtrl.isNumber(member.values[0])">
+					<canvas class="chart chart-doughnut"
+							height="{{gaugeCtrl.gaugeSize}}"
+							width="{{gaugeCtrl.gaugeSize}}"
+							chart-legend="true"
+							chart-options="gaugeCtrl.gaugeOptions"
+							chart-colors="member.colors"
+							chart-data="member.values"
+							chart-labels="gaugeCtrl.gaugeLabels"
+							ng-if="!member.exceededMaxValue">
+					</canvas>
+					<div ng-if="member.exceededMaxValue">
+						<h4>Max value exceeded</h4>
+						<div>Please adjust your settings</div>
+					</div>
+					<div style="margin-top:{{member.exceededMaxValue ? 0 : (-gaugeCtrl.gaugeSize/2.2)}}px; font-size:{{(gaugeCtrl.gaugeSize/7)}}px; font-weight:bold;">{{member.valueLabel}}</div>
+					<div class="gaugeMetricName" style="font-size:{{(gaugeCtrl.gaugeSize/7.5)}}px;">{{member.label}}</div>
+					<div style="font-size:{{(gaugeCtrl.gaugeSize/10)}}px;">{{member.name}}</div>
+				</div>
+				<div layout="row" layout-align="center center" flex ng-if="!gaugeCtrl.isNumber(member.values[0])">
+					<md-progress-circular md-diameter="96" md-mode='indeterminate'></md-progress-circular>
+					Waiting for data!
+				</div>
+			</div>
+			<div layout="row" layout-align="center center" flex ng-if="!gaugeCtrl.gaugeData.length">
+				<md-progress-circular md-diameter="96" md-mode='indeterminate'></md-progress-circular>
+				Waiting for data!
+			</div>
+		</div>
+	</div>
+</div>

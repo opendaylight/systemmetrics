@@ -1,0 +1,30 @@
+<!--
+ Copyright (c) 2016 Cisco Systems, Inc. and others.  All rights reserved.
+
+ This program and the accompanying materials are made available under the
+ terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ and is available at http://www.eclipse.org/legal/epl-v10.html
+-->
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0">
+    <reference id="httpService" availability="mandatory" activation="eager" interface="org.osgi.service.http.HttpService"/>
+    <reference id="loader" availability="mandatory" activation="eager" interface="org.opendaylight.dlux.loader.DluxModuleLoader"/>
+
+    <bean id="bundle" init-method="initialize" destroy-method="clean" class="org.opendaylight.dlux.loader.DluxModule">
+        <property name="httpService" ref="httpService"/>
+        <property name="loader" ref="loader"/>
+        <property name="moduleName" value="clusterconsole"/>
+        <property name="url" value="/src/app/clusterconsole"/>
+        <property name="directory" value="/clusterconsole/build"/>
+        <property name="requireJs" value="app/clusterconsole/main"/>
+        <property name="angularJs" value="app.clusterconsole"/>
+        <property name="cssDependencies">
+            <list>
+                <value>src/app/clusterconsole/vendor/roboto-fontface/css/roboto-fontface.css</value>
+                <value>src/app/clusterconsole/assets/css/clusterconsole-custom.css</value>
+                <value>src/app/clusterconsole/vendor/angular-material-data-table/dist/md-data-table.min.css</value>
+                <value>src/app/clusterconsole/vendor/bootstrap-material-design-icons/css/material-icons.min.css</value>
+		<value>src/app/clusterconsole/vendor/angular-bootstrap-colorpicker/css/colorpicker.min.css</value>
+            </list>
+        </property>
+    </bean>
+</blueprint>
