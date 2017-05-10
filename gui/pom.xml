@@ -20,8 +20,24 @@
         <maven>3.1.1</maven>
     </prerequisites>
 
+    <distributionManagement>
+        <repository>
+            <id>opendaylight-release</id>
+            <url>https://nexus.opendaylight.org/content/repositories/opendaylight.release/</url>
+        </repository>
+        <snapshotRepository>
+            <id>opendaylight-snapshot</id>
+            <url>https://nexus.opendaylight.org/content/repositories/opendaylight.snapshot/</url>
+        </snapshotRepository>
+        <site>
+            <id>opendaylight-site</id>
+            <url>${project.build.directory}/staged-site</url>
+        </site>
+    </distributionManagement>
+
     <modules>
         <module>gui-module</module>
         <module>gui-bundle</module>
     </modules>
 </project>
+
