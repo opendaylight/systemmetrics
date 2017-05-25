@@ -39,10 +39,11 @@ define([
         .constant('ClusterConsoleConstants', ClusterConsoleConstants());
 
 
-    function ClusterConsoleConfig($stateProvider, $mdThemingProvider, $translatePartialLoaderProvider,
+    function ClusterConsoleConfig($stateProvider, $mdThemingProvider, $urlRouterProvider,
                                   NavHelperProvider, ChartJsProvider) {
 
-        //$translatePartialLoaderProvider.addPart('app/clusterconsole/assets/data/locale');
+
+        $urlRouterProvider.otherwise('/clusterconsole/index');
 
 
         ChartJsProvider.setOptions({

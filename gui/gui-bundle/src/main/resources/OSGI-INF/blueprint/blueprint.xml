@@ -23,7 +23,7 @@
                 <value>src/app/clusterconsole/assets/css/clusterconsole-custom.css</value>
                 <value>src/app/clusterconsole/vendor/angular-material-data-table/dist/md-data-table.min.css</value>
                 <value>src/app/clusterconsole/vendor/bootstrap-material-design-icons/css/material-icons.min.css</value>
-		<value>src/app/clusterconsole/vendor/angular-bootstrap-colorpicker/css/colorpicker.min.css</value>
+		        <value>src/app/clusterconsole/vendor/angular-bootstrap-colorpicker/css/colorpicker.min.css</value>
             </list>
         </property>
     </bean>

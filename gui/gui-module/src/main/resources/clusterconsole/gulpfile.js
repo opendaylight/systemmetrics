@@ -86,25 +86,25 @@ gulp.task('copyAppImgs', function () {
  */
 gulp.task('copyVendorCss', function () {
     gutil.log(gutil.colors.cyan('INFO :: copying VENDOR css'));
-    return gulp.src(config.vendor_files.css, { cwd : 'src/vendor/**' })
+    return gulp.src(config.vendor_files.css, { cwd : 'node_modules/**' })
         .pipe(gulp.dest((argv.live ? livePrevConfig.live_build_dir + '/src/app/clusterconsole' : config.build_dir) + '/vendor'));
 });
 
 gulp.task('copyVendorFonts', function () {
     gutil.log(gutil.colors.cyan('INFO :: copying VENDOR fonts'));
-    return gulp.src(config.vendor_files.fonts, { cwd : 'src/vendor/**' })
+    return gulp.src(config.vendor_files.fonts, { cwd : 'node_modules/**' })
         .pipe(gulp.dest((argv.live ? livePrevConfig.live_build_dir + '/src/app/clusterconsole' : config.build_dir) + '/vendor'));
 });
 
 gulp.task('copyVendorRobotoFonts', function () {
     gutil.log(gutil.colors.cyan('INFO :: copying ROBOTO fonts to assets'));
-    return gulp.src(['src/vendor/roboto-fontface/fonts/*.*'], { base: 'src/vendor/roboto-fontface'})
+    return gulp.src(['node_modules/roboto-fontface/fonts/*.*'], { base: 'node_modules/roboto-fontface'})
         .pipe(gulp.dest(livePrevConfig.live_build_dir + '/assets'));
 });
 
 gulp.task('copyVendorJs', function () {
     gutil.log(gutil.colors.cyan('INFO :: copying VENDOR js files'));
-    return gulp.src(config.vendor_files.js, { cwd : 'src/vendor/**' })
+    return gulp.src(config.vendor_files.js, { cwd : 'node_modules/**' })
         .pipe(gulp.dest((argv.live ? livePrevConfig.live_build_dir + '/src/app/clusterconsole' : config.build_dir) + '/vendor'));
 });
 
