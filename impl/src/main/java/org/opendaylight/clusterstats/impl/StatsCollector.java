@@ -21,12 +21,14 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -191,16 +193,15 @@ public class StatsCollector {
                 .build();
     }
 
-    private static final Pattern pattern = Pattern.compile("@(.+?):");
+    private static final Pattern pattern = Pattern.compile("(.*?)@(.+?):");
 
-    private static IpAddress parseIpFromBucketVersion(final String bucketVersion) {
+    private static IpAddress parseIpFromAkkaaddress(final String bucketVersion) {
         LOG.debug("parsing ip from bucket version string: {}", bucketVersion);
         final Matcher matcher = pattern.matcher(bucketVersion);
 
         matcher.find();
 
-        final String match = matcher.group(1);
-        LOG.debug("Got match: {}", match);
+        final String match = matcher.group(2);
         return new IpAddress(match.toCharArray());
     }
 
@@ -235,24 +236,26 @@ public class StatsCollector {
         final JsonReader jsonReader = Json.createReader(jsonData);
         final JsonObject responseObject = jsonReader.readObject();
 
-        final JsonObject valueObject = responseObject.getJsonObject("value");
-        final String bucketVersions = valueObject.getString("BucketVersions");
+        JsonReader clusterstatusReader = Json.createReader(new StringReader(responseObject.getJsonObject("value").getString("ClusterStatus")));
+        final JsonObject clusterstatusObject = clusterstatusReader.readObject();
+        clusterstatusReader.close();
 
-        final List<IpAddress> clusterMemberIpAddresses =
-                Arrays.asList(bucketVersions.split(",")).stream()
-                .map(StatsCollector::parseIpFromBucketVersion)
-                .collect(Collectors.toList());
+        final JsonArray membersObject = clusterstatusObject.getJsonArray("members");
 
         final Map<IpAddress, LocalShardsAndMemberName> ipToLocalShardsAndMemberName = new HashMap<>();
 
-        for (final IpAddress clusterMemberIp : clusterMemberIpAddresses) {
+        for(int i=0; i<membersObject.size(); i++){
+            JsonObject memberObject = membersObject.getJsonObject(i);
+            final IpAddress clusterMemberIp = parseIpFromAkkaaddress(memberObject.getString("address"));
             ipToLocalShardsAndMemberName.put(clusterMemberIp, getLocalShardsAndMemberNameForClusterMember(clusterMemberIp));
         }
+        jsonReader.close();
 
         return buildClusterMembersOutput(ipToLocalShardsAndMemberName);
     }
 
     public static GetClusterMembersOutput getClusterMembers() throws IOException {
+
         final String requestUrl = RestUrlFactory.getClusterMemberUrl();
 
         LOG.debug("Making cluster member request to {}", requestUrl);
@@ -345,7 +348,6 @@ public class StatsCollector {
                 .setPendingTxCommitQueueSize(value.getInt("PendingTxCommitQueueSize"))
                 .setCommitIndex(value.getInt("CommitIndex"))
                 .setRaftState(value.getString("RaftState"));
-
         if (value.getString("RaftState").equals("Follower")) {
             return outputBuilder.build();
         }
@@ -362,7 +364,6 @@ public class StatsCollector {
 
     private static List<FollowerInfo> generateFollowerInfoList(JsonArray array) {
         List<FollowerInfo> followerInfoList = new ArrayList<>();
-
         for (int i = 0; i < array.size(); i++) {
             JsonObject followerObject = array.getJsonObject(i);
 

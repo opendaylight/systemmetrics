@@ -28,8 +28,8 @@ public class RestUrlFactory {
     private static final String TSDR_URL_FORMAT = "http://%s:8181/tsdr/metrics/query?%s";
     private static final String TSDR_QUERY_FORMAT = "tsdrkey=%s&from=%s";
 
-    private static final String CLUSTER_MEMBER_FORMAT = "http://%s:8181/jolokia/read/org.opendaylight.controller:" +
-            "type=RemoteRpcBroker,name=RemoteRpcRegistry";
+    private static final String CLUSTER_MEMBER_FORMAT = "http://%s:8181/jolokia/read/akka:" +
+            "type=Cluster";
 
     private static final String SHARD_MANAGER_FORMAT = "http://%s:8181/jolokia/read/org.opendaylight.controller:" +
             "Category=ShardManager,name=shard-manager-operational,type=DistributedOperationalDatastore";
