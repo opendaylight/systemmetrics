@@ -76,13 +76,11 @@ public class RestUrlFactoryTest {
         }
     }
 
-    /*@Test
+    @Test
     public void testGetClusterMemberUrl() throws Exception {
-        final String expected = "http://172.17.0.2:8181/jolokia/read/org.opendaylight.controller:" +
-        "type=RemoteRpcBroker,name=RemoteRpcRegistry";
-
+        final String expected = "http://localhost:8181/jolokia/read/akka:type=Cluster";
         assertEquals(expected, RestUrlFactory.getClusterMemberUrl());
-    }*/
+    }
 
     @Test
     public void testGetShardManagerUrl() throws Exception {
