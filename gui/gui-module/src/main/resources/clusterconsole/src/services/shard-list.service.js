@@ -127,19 +127,18 @@ define([
              * @returns {{member: string, name: string, status: string}}
              */
             function getShardNameParts(name) {
-                var retVal = {
-                    member: '',
-                    name: '',
-                    status: '',
+                const regex = /^(.*?)-shard-(.*)-(.*)$/g;
+
+                var match = regex.exec(name);
+                if (console.assert !== undefined) {
+                    console.assert(match.length === 4);
+                }
+
+                return {
+                    member: match[1],
+                    name: match[2],
+                    status: match[3]
                 };
-                var parts = name.split('-shard-'),
-                    parts2 = parts[1].split('-');
-
-                retVal.member = parts[0];
-                retVal.status = parts2.pop();
-                retVal.name = parts2.join('-');
-
-                return retVal;
             }
 
             /**

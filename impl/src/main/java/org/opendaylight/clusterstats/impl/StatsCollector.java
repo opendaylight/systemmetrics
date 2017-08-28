@@ -270,7 +270,7 @@ public class StatsCollector {
 
     private static void checkStatus(String status) throws IOException {
         if (!(status.equals("operational") || status.equals("config"))) {
-            throw new IOException("Status must be operational or config");
+            throw new IOException(String.format("Status must be operational or config, got %s instead.", status));
         }
     }
 
